@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather app</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
+
+    *,
+    button,
+    input {
+        margin: 0px;
+        padding: 0px;
+        box-sizing: border-box;
+
+        font-family: 'Roboto', sans-serif;
+    }
+
+    :root {
+        --bg-shape-color: linear-gradient(120deg, #343A4F, #0F1620);
+        --lightblue: #3D9DEA;
+        --darkblue: #4A4EEE;
+        --text-color: #D5E1EF;
+    }
+
+    html,
+    body {
+        width: 100%;
+        min-height: 100vh;
+        background-image: url(assets/pexels-lum3n-44775-167699.jpg);
+        background-attachment: fixed;
+        background-size: 100%;
+        color: var(--text-color);
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 0px;
+    }
+    .container-title{
+        color: #0F1620;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        font-size: x-large;
+        font-weight: bolder;
+   
+    }
+
+    #searchBar {
+
+        height: 50px;
+        background-color: rgba(15, 15, 15, 0.823);
+        width: 500px;
+        margin-bottom: 20px;
+        color: rgb(255, 255, 255);
+        border-radius: 25px;
+        border-color: rgb(255, 255, 255);
+        padding: 15px;
+        box-shadow: 10px 10px 10px rgba(15, 15, 15, 0.823);
+        border-style: solid;
+
+    }
+
+    #searchBar:hover {
+        background-color: rgba(255, 249, 249, 0.823);
+        color: black;
+    }
+
+    #SearchButton {
+        margin-top: 50px;
+        margin-left: 30px;
+        height: 50px;
+        width: 60px;
+        border-radius: 25%;
+        background-color: rgba(48, 135, 241, 0.823);
+        color: rgb(255, 255, 255);
+        font-weight: bolder;
+        box-shadow: 10px 10px 10px rgba(15, 15, 15, 0.823);
+        border-style: solid;
+    }
+
+    #SearchButton:hover {
+        background-color: rgba(10, 62, 91, 0.995);
+        color: rgb(255, 252, 252);
+    }
+
+    .wrapper {
+        display: none;
+        grid-template-columns: 100px 1fr;
+        gap: 16px;
+        width: 350px;
+        border-radius: 40px;
+        background-image: var(--bg-shape-color);
+        overflow: hidden;
+    }
+
+    .overviewInfo,
+    .weatherSpecifications {
+        padding: 24px;
+    }
+
+    .overviewInfo {
+        background-image: linear-gradient(176deg, var(--lightblue), var(--darkblue));
+    }
+
+
+    .weatherinfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: relative;
+        min-height: 200px;
+        margin-bottom: 50px;
+    }
+
+    .weatherImage {
+        position: absolute;
+        width: 321px;
+        height: auto;
+
+
+        animation: updowncontroller infinite 3s alternate;
+
+        img {
+            width: 100%;
+            height: auto
+        }
+
+        transition: ease 2s all;
+
+
+    }
+
+
+    h1 {
+        font-family: 'Michroma', sans-serif;
+    }
+
+    .grouptext {
+        h3 {
+            letter-spacing: 3.2px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        p {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+    }
+
+    .Icon {
+        width: 40px;
+        height: 40px;
+        background-image: var(--bg-shape-color);
+        border-radius: 8px;
+        margin-right: 16px;
+    }
+
+    .weatherSpecifications {
+
+        h1 {
+            margin-top: 10px;
+            margin-bottom: 16px;
+            font-size: 32px;
+        }
+
+        p {
+            opacity: 0.8;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .productFeatures {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-top: 20px;
+            grid-row-gap: 16px;
+
+            .feature {
+                display: flex;
+            }
+        }
+    }
+
+    /* animation */
+
+    @keyframes updowncontroller {
+        0% {
+            transform: rotate(-90deg) translate(-56px, 66px);
+        }
+
+        80%,
+        100% {
+            transform: rotate(-70deg) translate(10px, 66px);
+        }
+    }
+</style>
+
+
+
+
+
+
+<body>
+    <div class="body">
+        <div class="mainDv">
+            <p class="container-title">Type Weather</p>
+            <input type="text" placeholder="Search Your City Here" id="searchBar">
+            <input type="button" value="Search" id="SearchButton" onclick="search()">
+            <div id="location" class="box">
+            </div>
+            <div class="box"></div>
+        </div>
+
+
+
+        <div class="wrapper" id="wrapper">
+
+
+            <div class="overviewInfo">
+
+                <div class="weatherinfo">
+                    <div class="grouptext">
+                        <h3>Country</h3>
+                        <div id="countryP">
+
+                        </div>
+                    </div>
+                    <div class="grouptext">
+                        <h3>State</h3>
+                        <div id="stateP">
+
+                        </div>
+                    </div>
+                    <div class="grouptext">
+                        <h3>GPS <br>Coordinates</h3>
+                        <div id="gpsP">
+
+                        </div>
+                    </div>
+
+
+                    <div class="weatherImage" id="weatherImage">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="weatherSpecifications">
+                <h1> Weather Today</h1>
+                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus voluptatem incidunt aliquam
+                    placeat facilis </p>
+
+                <div class="productFeatures">
+                    <div class="feature">
+                        <img src="assets/wind.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>Wind</strong></p>
+                            <p id="wind"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <img src="assets/humidity.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>Humidity</strong></p>
+                            <p id="Humidity"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <img src="assets/sea-level.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p><strong>Sea Level</strong></p>
+                            <p id="Sea_Level"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+
+                        <img src="assets/temperature.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>temperature</strong></p>
+                            <p id="temperature"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="wrapper" id="wrapper">
+
+
+            <div class="overviewInfo">
+
+                <div class="weatherinfo">
+                    <div class="grouptext">
+                        <h3>Country</h3>
+                        <div id="countryP">
+
+                        </div>
+                    </div>
+                    <div class="grouptext">
+                        <h3>State</h3>
+                        <div id="stateP">
+
+                        </div>
+                    </div>
+                    <div class="grouptext">
+                        <h3>GPS <br>Coordinates</h3>
+                        <div id="gpsP">
+
+                        </div>
+                    </div>
+
+
+                    <div class="weatherImage" id="weatherImage">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="weatherSpecifications">
+                <h1> Weather Today</h1>
+                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus voluptatem incidunt aliquam
+                    placeat facilis </p>
+
+                <div class="productFeatures">
+                    <div class="feature">
+                        <img src="assets/wind.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>Wind</strong></p>
+                            <p id="wind"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <img src="assets/humidity.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>Humidity</strong></p>
+                            <p id="Humidity"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <img src="assets/sea-level.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p><strong>Sea Level</strong></p>
+                            <p id="Sea_Level"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+
+                        <img src="assets/temperature.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>temperature</strong></p>
+                            <p id="temperature"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        <div class="wrapper" id="wrapper">
+
+
+            <div class="overviewInfo">
+
+                <div class="weatherinfo">
+                    <div class="grouptext">
+                        <h3>Country</h3>
+                        <div id="countryP">
+
+                        </div>
+                    </div>
+                    <div class="grouptext">
+                        <h3>State</h3>
+                        <div id="stateP">
+
+                        </div>
+                    </div>
+                    <div class="grouptext">
+                        <h3>GPS <br>Coordinates</h3>
+                        <div id="gpsP">
+
+                        </div>
+                    </div>
+
+
+                    <div class="weatherImage" id="weatherImage">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="weatherSpecifications">
+                <h1> Weather Today</h1>
+                <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloribus voluptatem incidunt aliquam
+                    placeat facilis </p>
+
+                <div class="productFeatures">
+                    <div class="feature">
+                        <img src="assets/wind.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>Wind</strong></p>
+                            <p id="wind"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <img src="assets/humidity.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>Humidity</strong></p>
+                            <p id="Humidity"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <img src="assets/sea-level.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p><strong>Sea Level</strong></p>
+                            <p id="Sea_Level"></p>
+                        </div>
+                    </div>
+                    <div class="feature">
+
+                        <img src="assets/temperature.png" alt="" srcset="" class="Icon">
+                        <div class="featureText">
+                            <p> <strong>temperature</strong></p>
+                            <p id="temperature"></p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+        
+
+
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+        <script src="app.js"></script>
+
+</body>
+
+</html>
